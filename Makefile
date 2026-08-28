@@ -28,7 +28,7 @@ spar:
 
 ui:
 	$(BIN)/python -m kit.arena_ui.build_ui
-	$(BIN)/python -m kit.arena_ui.serve --open
+	$(BIN)/python -m kit.arena_ui.serve
 
 # Always validate against the REAL exported world. Without --world the validator falls
 # back to kit/world/fixture.py's ~40-page synthetic world, where every real anchor fails
@@ -74,7 +74,7 @@ check-referee:
 # The world artifact is exported by the instructor; without it nothing can run.
 check-world:
 	@ls kit/world/*/manifest.json >/dev/null 2>&1 		|| (echo "no world in kit/world/ - ask your instructor for the world artifact" && exit 1)
-	@$(BIN)/python -c "import json,glob; m=json.load(open(sorted(glob.glob('kit/world/*/manifest.json'))[-1])); 	 print('world', m.get('world_id'), '-', sum(m.get('counts',{}).values()), 'pages')"
+	@$(BIN)/python -c "import json,glob; m=json.load(open(sorted(glob.glob('kit/world/*/manifest.json'))[-1])); c=m.get('counts',{}); print('world', m.get('world_id'), '-', c.get('__total__', sum(c.values())), 'pages')"
 	@! ls kit/world/*/truth.json >/dev/null 2>&1 || (echo "FAIL: truth.json must never ship to students" && exit 1)
 
 doctor: check-no-key check-world check-referee validate
